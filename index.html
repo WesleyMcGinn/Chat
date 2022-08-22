@@ -159,7 +159,7 @@
           window.clearInterval(wait);
           document.documentElement.style.cursor = 'auto';
           if (cloud_Chat_allChatRoomData == NaN || cloud_Chat_allChatRoomData == undefined || cloud_Chat_allChatRoomData == null) {
-            cloud_Chat_allChatRoomData = [['TESTROOM', 'PASSWORD', 0, []], ['NO-PASS', '', 0, []]];
+            cloud_Chat_allChatRoomData = [['TESTROOM', 'PASSWORD', 0, [], []], ['NO-PASS', '', 0, [], []]];
           }
           if (urlParameters.has('r')) {
             document.getElementById("Room_input").value = urlParameters.get('r').toUpperCase();
@@ -246,7 +246,7 @@
             }
           }
           if (ID_good == true) {
-            roomNum =  cloud_Chat_allChatRoomData.push([roomName, roomPass, 0, []]);
+            roomNum =  cloud_Chat_allChatRoomData.push([roomName, roomPass, 0, [], []]);
             wait = window.setInterval("enterRoom('" + roomName + "', '" + roomPass + "')", 200);
           } else {
             document.getElementById("Heading").innerHTML = "Create New Chat Room";
@@ -278,6 +278,28 @@
                 document.getElementById("Welcome").style.display = 'none';
                 document.getElementById("Create Chat Room").style.display = 'none';
                 document.getElementById("Chat").style.display = '';
+                if (cloud_Chat_allChatRoomData[roomNum][4].length > 0) {
+                  var deletionMessage = '';
+                  for (j = 0; j < cloud_Chat_allChatRoomData[roomNum][4].length; j++) {
+                    deletionMessage += cloud_Chat_allChatRoomData[roomNum][4][j];
+                    if (j == cloud_Chat_allChatRoomData[roomNum][4].length - 2) {
+                      deletionMessage += ", and ";
+                    } else {
+                      if (j < cloud_Chat_allChatRoomData[roomNum][4].length - 2) {
+                        deletionMessage += ", ";
+                      }
+                    }
+                  }
+                  if (cloud_Chat_allChatRoomData[roomNum][4].length == 1) {
+                    deletionMessage += ' has ';
+                  } else {
+                    deletionMessage += ' have ';
+                  }
+                  deletionMessage += 'requested to clear this chat room.  <button onclick="clear_chat.vote.yes()">Agree</button> <button onclick="clear_chat.vote.no()">Disagree</button>';
+                  document.getElementById("ClearRequests").innerHTML = deletionMessage;
+                  document.getElementById("ClearRequests").style.display = '';
+                }
+                printMessages();
               } else {
                 document.getElementById("Pass_input").style.color = "red";
                 document.getElementById("Pass_input").style.borderColor = "red";
@@ -303,6 +325,47 @@
           if (emmet == true && transparency == true) { return "#" + randomHexidecimals(4); }
           if (emmet == false && transparency == false) { return "#" + randomHexidecimals(6); }
           if (emmet == false && transparency == true) { return "#" + randomHexidecimals(8); }
+        }
+
+        function newColor() {
+          var previousColor = myColor;
+          myColor = randomColor(false, false) + "80";
+          console.log("Previous: " + previousColor);
+          console.log("New: " + myColor);
+          document.getElementById("Preview").style.backgroundColor = myColor;
+          for (i = 0; i < cloud_Chat_allChatRoomData[roomNum][3].length; i++) {
+            console.log("Running loop for " + i.toString() + ", with value " + cloud_Chat_allChatRoomData[roomNum][3][i]);
+            if (cloud_Chat_allChatRoomData[roomNum][3][i].replace(previousColor, myColor) != cloud_Chat_allChatRoomData[roomNum][3][i]) {
+              cloud_Chat_allChatRoomData[roomNum][3][i] = cloud_Chat_allChatRoomData[roomNum][3][i].replace(previousColor, myColor);
+            }
+          }
+        }
+
+        var clear_chat = {
+          vote : {
+            yes : function() {
+              cloud_Chat_allChatRoomData[roomNum][4].unshift(name);
+              document.getElementById("ClearRequests").style.display = 'none';
+              document.getElementById("ClearRequests").innerHTML = '';
+            },
+            no : function() {
+              cloud_Chat_allChatRoomData[roomNum][4] = [];
+              document.getElementById("ClearRequests").style.display = 'none';
+              document.getElementById("ClearRequests").innerHTML = '';
+            }
+          },
+          check : function() {
+            if (cloud_Chat_allChatRoomData[roomNum][4].length >= cloud_Chat_allChatRoomData[roomNum][2] && cloud_Chat_allChatRoomData[roomNum][2] > 1) {
+              cloud_Chat_allChatRoomData[roomNum][4] = [];
+              cloud_Chat_allChatRoomData[roomNum][3] = [];
+            }
+            if (cloud_Chat_allChatRoomData[roomNum][4].length == 0) {
+              if (document.getElementById("ClearRequests").innerHTML != '') {
+                document.getElementById("ClearRequests").style.display = 'none';
+                document.getElementById("ClearRequests").innerHTML = '';
+              }
+            }
+          }
         }
 
         function updateName(element) {
@@ -346,9 +409,13 @@
         }
 
         function refreshChat() {
+          clear_chat.check();
           if (document.getElementById("Write").value != 'Type a message here....') {
-            document.getElementById("Preview").innerHTML = document.getElementById("Write").value + "<br>-" + name;
+            if (document.getElementById("Preview").innerHTML != document.getElementById("Write").value + "<br>-" + name) {
+              document.getElementById("Preview").innerHTML = document.getElementById("Write").value + "<br>-" + name;
+            }
           }
+          printMessages();
         }
 
       </script>
@@ -397,11 +464,12 @@
           <button onclick="document.getElementById('Name2').style.display = 'none'">Enter</button>
           <br>
         </p>
+        <p id="ClearRequests" style="color: red"></p>
         <p>
           <button onclick="home()">Home</button>
-          <button onclick="">New Theme</button>
-          <button onclick="">New Color</button>
-          <button onclick="">Clear All</button>
+          <button onclick="theme(1)">New Theme</button>
+          <button onclick="newColor()">New Color</button>
+          <button onclick="clear_chat.vote.yes()">Clear All</button>
           <button onclick="">Extension</button>
         </p>
         <br>
