@@ -125,7 +125,7 @@
         var wait = null;
         var chatRefresh = null;
         var myColor = randomColor(false, false) + '80';
-        var currentTheme = 1;
+        var currentTheme = 0;
 
         var urlParameters = {
           link : location.href,
@@ -193,25 +193,27 @@
           options : ['blue-green'],
           data : ['body { background-image: linear-gradient(90deg, #1af, #5f7); background-color: #3db } h1 { color: #ff0; background-color: #0005 } p { color: #000 } label { color: #000 } input { color: #00f; background-image: linear-gradient(#eef, #0ff); border-color: #017 } input:active { background-image: linear-gradient(#eef, #eff) } button { color: #000; background-image: linear-gradient(#0ff, #00f); border-color: #017 } button:hover { background-image: linear-gradient(#7ff, #57f) } textarea { color: #00f } a:visited { color: #0a2 } a:link { color: #00f } a:active { background-color: #0ff }'],
           setByNumber : function(themeNumber) {
-            document.getElementById("CSS theme").innerHTML = data[themeNumber];
+            document.getElementById("CSS theme").innerHTML = this.data[themeNumber];
+            currentTheme = themeNumber;
           },
           setByName : function(themeName) {
-            for (g = 0; g < options.length; g++) {
-              if (options[g] == themeName) {
-                document.getElementById("CSS theme").innerHTML = data[g];
+            for (g = 0; g < this.options.length; g++) {
+              if (this.options[g] == themeName) {
+                document.getElementById("CSS theme").innerHTML = this.data[g];
+                currentTheme = g;
               }
             }
           },
           next : function() {
-            themeNumber += 1;
-            if (themeNumber >= options.length) {
-              themNumber = 0;
+            currentTheme += 1;
+            if (currentTheme >= this.options.length) {
+              currentTheme = 0;
             }
           },
           previous : function() {
-            themeNumber -= 1;
-            if (themeNumber < 0) {
-              themNumber = options.length;
+            currentTheme -= 1;
+            if (currentTheme < 0) {
+              currentTheme = this.options.length - 1;
             }
           }
         }
