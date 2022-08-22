@@ -377,7 +377,8 @@
         function post() {
           if (name != '') {
             cloud_Chat_allChatRoomData[roomNum][3].unshift("<p style='padding: 7px; background-color: " + myColor + "; border-radius: 12px'>" + document.getElementById("Write").value + "<br>-" + name + "</p>");
-            document.getElementById("Write").value = '';
+            document.getElementById("Write").value = 'Type a message here....';
+            document.getElementById("Preview").innerHTML = '';
           } else {
             document.getElementById("Name_input_2").style.color = "red";
             document.getElementById("Name_input_2").style.borderColor = "red";
