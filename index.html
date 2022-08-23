@@ -126,6 +126,8 @@
         var chatRefresh = null;
         var myColor = randomColor(false, false) + '80';
         var currentTheme = 0;
+        var previousMessageList = '';
+        var chatRunning = false;
 
         var urlParameters = {
           link : location.href,
@@ -366,25 +368,38 @@
               cloud_Chat_allChatRoomData[roomNum][3][i] = cloud_Chat_allChatRoomData[roomNum][3][i].replace(previousColor, myColor);
             }
           }
+          printMessages();
         }
 
         var clear_chat = {
           vote : {
-            yes : function() {
+            yes : function(fromButton = false) {
               cloud_Chat_allChatRoomData[roomNum][4].unshift(name);
-              document.getElementById("ClearRequests").style.display = 'none';
-              document.getElementById("ClearRequests").innerHTML = '';
+              this.closeDialog();
+              if (fromButton == true) {
+                document.getElementById("ClearRequests").style.display = '';
+                document.getElementById("ClearRequests").innerHTML = 'You have sucessfully voted to clear this chat.';
+                this.waitToClose = window.setInterval("clear_chat.closeDialog()", 3500);
+              }
             },
             no : function() {
               cloud_Chat_allChatRoomData[roomNum][4] = [];
-              document.getElementById("ClearRequests").style.display = 'none';
-              document.getElementById("ClearRequests").innerHTML = '';
+              this.closeDialog();
+            }
+          },
+          closeDialog : function() {
+            document.getElementById("ClearRequests").style.display = 'none';
+            document.getElementById("ClearRequests").innerHTML = '';
+            if (this.waitToClose != null) {
+              window.clearInterval(this.waitToClose);
+              this.waitToClose = null;
             }
           },
           check : function() {
             if (cloud_Chat_allChatRoomData[roomNum][4].length >= cloud_Chat_allChatRoomData[roomNum][2] && cloud_Chat_allChatRoomData[roomNum][2] > 1) {
               cloud_Chat_allChatRoomData[roomNum][4] = [];
               cloud_Chat_allChatRoomData[roomNum][3] = [];
+              printMessages();
             }
             if (cloud_Chat_allChatRoomData[roomNum][4].length == 0) {
               if (document.getElementById("ClearRequests").innerHTML != '') {
@@ -392,7 +407,8 @@
                 document.getElementById("ClearRequests").innerHTML = '';
               }
             }
-          }
+          },
+          waitToClose : null,
         }
 
         function updateName(element) {
@@ -414,36 +430,53 @@
         }
 
         function startChat() {
-          if (name != '') {
-            chatRefresh = window.setInterval("refreshChat()", 100);
-            document.getElementById("Preview").style.backgroundColor = myColor;
-            if (document.getElementById("Write").value == 'Type a message here....') {
-              document.getElementById("Write").value = '';
+          if (chatRunning == false) {
+            if (name != '') {
+              chatRunning = true;
+              chatRefresh = window.setInterval("refreshChat()", 100);
+              document.getElementById("Preview").style.backgroundColor = myColor;
+            } else {
+              document.getElementById("Name_input_2").style.color = "red";
+              document.getElementById("Name_input_2").style.borderColor = "red";
+              document.getElementById("Name_input_2").value = "PLEASE ENTER NAME";
             }
-          } else {
-            document.getElementById("Name_input_2").style.color = "red";
-            document.getElementById("Name_input_2").style.borderColor = "red";
-            document.getElementById("Name_input_2").value = "PLEASE ENTER NAME";
+          }
+          if (document.getElementById("Write").value == 'Type a message here....' && name != '') {
+            document.getElementById("Write").value = '';
           }
         }
 
         function endChat() {
-          if (chatRefresh != null) {
-            window.clearInterval(chatRefresh);
+          if (chatRunning == true) {
+            chatRunning = false;
+            if (chatRefresh != null) {
+              window.clearInterval(chatRefresh);
+            }
+            cloud_Chat_allChatRoomData[roomNum][2] -= 1;
+            document.getElementById("Write").value = '';
+            document.getElementById("Preview").innerHTML = '';
           }
-          cloud_Chat_allChatRoomData[roomNum][2] -= 1;
-          document.getElementById("Write").value = '';
-          document.getElementById("Preview").innerHTML = '';
         }
 
         function refreshChat() {
-          clear_chat.check();
-          if (document.getElementById("Write").value != 'Type a message here....') {
-            if (document.getElementById("Preview").innerHTML != document.getElementById("Write").value + "<br>-" + name) {
-              document.getElementById("Preview").innerHTML = document.getElementById("Write").value + "<br>-" + name;
+          if (chatRunning == true) {
+            clear_chat.check();
+            if (document.getElementById("Write").value != 'Type a message here....') {
+              if (document.getElementById("Preview").innerHTML != document.getElementById("Write").value + "<br>-" + name) {
+                document.getElementById("Preview").innerHTML = document.getElementById("Write").value + "<br>-" + name;
+              }
             }
+            if (previousMessageList == cloud_Chat_allChatRoomData[roomNum][3]) {
+              previousMessageList = cloud_Chat_allChatRoomData[roomNum][3];
+              printMessages();
+            }
+          } else {
+            window.clearInterval(chatRefresh);
           }
-          printMessages();
+        }
+
+        function printMessages() {
+          document.getElementById("Messages").innerHTML = cloud_Chat_allChatRoomData[roomNum][3].join("<!--Next-->");
         }
 
       </script>
@@ -497,11 +530,11 @@
           <button onclick="home()">Home</button>
           <button onclick="theme(1)">New Theme</button>
           <button onclick="newColor()">New Color</button>
-          <button onclick="clear_chat.vote.yes()">Clear All</button>
+          <button onclick="clear_chat.vote.yes(true); this.style.display = 'none'">Clear All</button>
           <button onclick="">Extension</button>
         </p>
         <br>
-        <textarea id="Write" cols="57" rows="5" onclick="startChat()">Type a message here....</textarea>
+        <textarea id="Write" cols="57" rows="5" onclick="startChat()" onfocus="startChat()">Type a message here....</textarea>
         <p id="Preview" style="padding: 7px; background-color: #eef5; border-radius: 12px"></p>
         <button onclick="post()">Post</button>
         <br>
