@@ -1,6 +1,14 @@
 # Chat
 
-## Summary:
+## To do:
+Most of the programming for Chat is done, but here is what there is left to do:
+ - Make easy embed option available.
+ - Enable multiple CSS color themes (By defualt, the theme is blue-green)
+ - Make Chat Chrome Extension
+ 
+ **Note:** _The following description and list of main features is describing the completed Chat program, not as it is currently._
+
+## Description:
 A fairly simple chat system in which you can create your own chat room and use it at any time.  You can even generate links that will automatically enter your name, chat room ID, and chat room password.  With scarcely any loading time, this program works on new and very old web browsers.  Basically, if a web browser supports javascript, then it will most likely support every required functionality of this program.  This program is availible on any device with a web browser, including Linux Devices.  It is also available as a chrome extension.  You can also embed any chat room into your website!
 
 ## List of main features:
