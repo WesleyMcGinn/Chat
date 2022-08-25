@@ -26,6 +26,11 @@
         font-size: 15px;
         font-family: Verdana, sans-serif;
       }
+      div {
+        color: #000;
+        font-size: 15px;
+        font-family: Verdana, sans-serif;
+      }
       label {
         color: #000;
         font-size: 15px;
@@ -45,6 +50,9 @@
       input:hover {
         border-style: dashed;
         cursor: text;
+      }
+      .checkbox:hover {
+        cursor: pointer;
       }
       input:active {
         background-image: linear-gradient(#eef, #eff);
@@ -101,14 +109,23 @@
       table {
         border-style: none;
       }
+      .warning {
+        color: red;
+      }
+      .copy_content {
+        font-family: monospace, sans-serif;
+        font-size: 13px;
+        background-color: #0004;
+        color: #000;
+        border-radius: 12px;
+        padding: 7px;
+      }
+      .copy_content:hover {
+        cursor: copy;
+        color: #0ff;
+      }
       .center {
         text-align: center;
-      }
-      .right {
-        text-align: right;
-      }
-      .left {
-        text-align: left;
       }
     </style>
     <style id="CSS theme"></style>
@@ -126,8 +143,9 @@
         var chatRefresh = null;
         var myColor = randomColor(false, false) + '80';
         var currentTheme = 0;
-        var previousMessageList = '';
         var chatRunning = false;
+        var messageContent = '';
+        var oldMessageContent = '';
 
         var urlParameters = {
           link : location.href,
@@ -181,6 +199,9 @@
             document.getElementById("Name_input").value = name;
           } else {
             document.getElementById("Name2").style.display = '';
+          }
+          if (urlParameters.has('t')) {
+            theme.setByNumber(urlParameters.get('t'));
           }
           checkForPassword();
         }
@@ -310,28 +331,11 @@
                 document.getElementById("Welcome").style.display = 'none';
                 document.getElementById("Create Chat Room").style.display = 'none';
                 document.getElementById("Chat").style.display = '';
-                if (cloud_Chat_allChatRoomData[roomNum][4].length > 0) {
-                  var deletionMessage = '';
-                  for (j = 0; j < cloud_Chat_allChatRoomData[roomNum][4].length; j++) {
-                    deletionMessage += cloud_Chat_allChatRoomData[roomNum][4][j];
-                    if (j == cloud_Chat_allChatRoomData[roomNum][4].length - 2) {
-                      deletionMessage += ", and ";
-                    } else {
-                      if (j < cloud_Chat_allChatRoomData[roomNum][4].length - 2) {
-                        deletionMessage += ", ";
-                      }
-                    }
-                  }
-                  if (cloud_Chat_allChatRoomData[roomNum][4].length == 1) {
-                    deletionMessage += ' has ';
-                  } else {
-                    deletionMessage += ' have ';
-                  }
-                  deletionMessage += 'requested to clear this chat room.  <button onclick="clear_chat.vote.yes()">Agree</button> <button onclick="clear_chat.vote.no()">Disagree</button>';
-                  document.getElementById("ClearRequests").innerHTML = deletionMessage;
-                  document.getElementById("ClearRequests").style.display = '';
-                }
+                clear_chat.check();
                 printMessages();
+                if (cloud_Chat_allChatRoomData[roomNum][4].indexOf(name) == -1) {
+                  document.getElementById("clear button").style.display = '';
+                }
               } else {
                 document.getElementById("Pass_input").style.color = "red";
                 document.getElementById("Pass_input").style.borderColor = "red";
@@ -375,7 +379,9 @@
           vote : {
             yes : function(fromButton = false) {
               cloud_Chat_allChatRoomData[roomNum][4].unshift(name);
-              this.closeDialog();
+              document.getElementById("ClearRequests").style.display = 'none';
+              document.getElementById("ClearRequests").innerHTML = '';
+              document.getElementById("clear button").style.display = 'none';
               if (fromButton == true) {
                 document.getElementById("ClearRequests").style.display = '';
                 document.getElementById("ClearRequests").innerHTML = 'You have sucessfully voted to clear this chat.';
@@ -384,16 +390,16 @@
             },
             no : function() {
               cloud_Chat_allChatRoomData[roomNum][4] = [];
-              this.closeDialog();
+              document.getElementById("ClearRequests").style.display = 'none';
+              document.getElementById("ClearRequests").innerHTML = '';
             }
           },
           closeDialog : function() {
-            document.getElementById("ClearRequests").style.display = 'none';
-            document.getElementById("ClearRequests").innerHTML = '';
-            if (this.waitToClose != null) {
-              window.clearInterval(this.waitToClose);
-              this.waitToClose = null;
+            if (document.getElementById("ClearRequests").innerHTML == 'You have sucessfully voted to clear this chat.') {
+              document.getElementById("ClearRequests").style.display = 'none';
+              document.getElementById("ClearRequests").innerHTML = '';
             }
+            window.clearInterval(this.waitToClose);
           },
           check : function() {
             if (cloud_Chat_allChatRoomData[roomNum][4].length >= cloud_Chat_allChatRoomData[roomNum][2] && cloud_Chat_allChatRoomData[roomNum][2] > 1) {
@@ -407,6 +413,38 @@
                 document.getElementById("ClearRequests").innerHTML = '';
               }
             }
+            if (cloud_Chat_allChatRoomData[roomNum][4].length > 0) {
+              var deletionMessage = '';
+              for (j = 0; j < cloud_Chat_allChatRoomData[roomNum][4].length; j++) {
+                deletionMessage += cloud_Chat_allChatRoomData[roomNum][4][j];
+                if (j == cloud_Chat_allChatRoomData[roomNum][4].length - 2) {
+                  if (cloud_Chat_allChatRoomData[roomNum][4].length == 2) {
+                    deletionMessage += " and ";
+                  } else {
+                    deletionMessage += ", and ";
+                  }
+                } else {
+                  if (j < cloud_Chat_allChatRoomData[roomNum][4].length - 2) {
+                    deletionMessage += ", ";
+                  }
+                }
+              }
+              if (cloud_Chat_allChatRoomData[roomNum][4].length == 1) {
+                deletionMessage += ' has ';
+              } else {
+                deletionMessage += ' have ';
+              }
+              deletionMessage += 'requested to clear this chat room.  ';
+              if (cloud_Chat_allChatRoomData[roomNum][4].indexOf(name) == -1) {
+                deletionMessage += '<button onclick="clear_chat.vote.yes()">Agree</button> <button onclick="clear_chat.vote.no()">Disagree</button>';
+              } else {
+                deletionMessage += '<button onclick="clear_chat.vote.no()">Undo</button>';
+              }
+              if (document.getElementById("ClearRequests").innerHTML != deletionMessage) {
+                document.getElementById("ClearRequests").innerHTML = deletionMessage;
+              }
+              document.getElementById("ClearRequests").style.display = '';
+            }
           },
           waitToClose : null,
         }
@@ -419,7 +457,7 @@
 
         function post() {
           if (name != '') {
-            cloud_Chat_allChatRoomData[roomNum][3].unshift("<p style='padding: 7px; background-color: " + myColor + "; border-radius: 12px'>" + document.getElementById("Write").value + "<br>-" + name + "</p>");
+            cloud_Chat_allChatRoomData[roomNum][3].unshift("<div style='padding: 7px; background-color: " + myColor + "; border-radius: 12px'>" + document.getElementById("Write").value + "<br>-" + name + "</div>");
             document.getElementById("Write").value = 'Type a message here....';
             document.getElementById("Preview").innerHTML = '';
           } else {
@@ -466,29 +504,87 @@
                 document.getElementById("Preview").innerHTML = document.getElementById("Write").value + "<br>-" + name;
               }
             }
-            if (previousMessageList == cloud_Chat_allChatRoomData[roomNum][3]) {
-              previousMessageList = cloud_Chat_allChatRoomData[roomNum][3];
-              printMessages();
-            }
+            printMessages();
           } else {
             window.clearInterval(chatRefresh);
           }
         }
 
         function printMessages() {
-          document.getElementById("Messages").innerHTML = cloud_Chat_allChatRoomData[roomNum][3].join("<!--Next-->");
+          messageContent = cloud_Chat_allChatRoomData[roomNum][3].join("<!--Next--><br>");
+          if (messageContent != oldMessageContent) {
+            document.getElementById("Messages").innerHTML = messageContent;
+            oldMessageContent = messageContent;
+          }
+        }
+
+        var link = {
+          themeBox : false,
+          nameBox : false,
+          start : function() {
+            document.getElementById("Link Output").style.display = '';
+            this.refresh();
+          },
+          end : function() {
+            document.getElementById("Link Output").style.display = 'none';
+          },
+          box : function(boxNumber) {
+            if (boxNumber == 1) {
+              this.themeBox = !(this.themeBox);
+              this.refresh()
+            }
+            if (boxNumber == 2) {
+              this.nameBox = !(this.nameBox);
+              if (this.nameBox == true) {
+                document.getElementById("linkForm text").style.display = '';
+                document.getElementById("linkForm text label").style.display = '';
+              } else {
+                document.getElementById("linkForm text").style.display = 'none';
+                document.getElementById("linkForm text label").style.display = 'none';
+                document.getElementById("linkForm text").value = '';
+                this.refresh();
+              }
+            }
+          },
+          refresh : function() {
+            document.getElementById("link").innerHTML = "https://wesleymcginn.github.io/Chat?r=" + roomName;
+            if (cloud_Chat_allChatRoomData[roomNum][1] != '') {
+              document.getElementById("link").innerHTML += "&p=" + cloud_Chat_allChatRoomData[roomNum][1];
+            }
+            if (this.themeBox == true) {
+              document.getElementById("link").innerHTML += "&t=" + currentTheme.toString();
+            }
+            if (this.nameBox == true) {
+              if (document.getElementById("linkForm text").value != '') {
+                document.getElementById("link").innerHTML += "&n=" + document.getElementById("linkForm text").value;
+              }
+            }
+          },
+          copy : function() {
+            this.content = "https://wesleymcginn.github.io/Chat?r=" + roomName;
+            if (cloud_Chat_allChatRoomData[roomNum][1] != '') {
+              this.content += "&p=" + cloud_Chat_allChatRoomData[roomNum][1];
+            }
+            if (this.themeBox == true) {
+              this.content += "&t=" + currentTheme.toString();
+            }
+            if (this.nameBox == true) {
+              this.content += "&n=" + document.getElementById("linkForm text").value;
+            }
+            navigator.clipboard.writeText(this.content);
+            this.end();
+          }
         }
 
       </script>
-      <noscript><p style="color: red"><b><u>ERROR:</u></b> Your web browser does not suppport javascript or you have it disabled in your settings.  Javascript is required to run nearly anything on the internet besides loading basic documents.  As should be expected, JavaScript must be enabled on your computer in order for you to use this.</p></noscript>
+      <noscript><p class="warning"><b><u>ERROR:</u></b> Your web browser does not suppport javascript or you have it disabled in your settings.  Javascript is required to run nearly anything on the internet besides loading basic documents.  As should be expected, JavaScript must be enabled on your computer in order for you to use this.</p></noscript>
       <h1 id="Heading">Chat</h1>
       <div id="Welcome">
         <p>Welcome to "Chat", a simple, fast-loading, and easy-to-use messaging app developed by <a href="https://github.com/WesleyMcGinn">Wesley McGinn</a>.</p><br>
         <p>
           <label for="Name_input">Your Name:  </label>
           <input id="Name_input" type="text" size="41" onclick="refresh('Name_input')" oninput="document.getElementById('Name2').style.display = 'none'; updateName('Name_input')" autofocus>
-        </p>
-        <br>
+        </p><br>
         <p>
           <label for="Room_input">Chat Room ID: </label>
           <input id="Room_input" type="text" size="7" oninput="checkForPassword()" onclick="refresh('Room_input')"> 
@@ -498,8 +594,7 @@
         <p id="getPass" style="display: none">
           <label for="Pass_input">Chat Room Password: </label>
           <input id="Pass_input" type="password" size="30" onclick="refresh('Pass_input')">
-        </p>
-        <br>
+        </p><br>
         <button onclick="enterRoom('', '')">GO →</button>
       </div>
       <div id="Create Chat Room" style="display: none">
@@ -513,8 +608,7 @@
         </p>
         <p>
           *Leave the password space blank to disable the need to type in a password to get in.  It will then be possible, yet unlikely, for a random person to access your Chat Room.
-        </p>
-        <br>
+        </p><br>
         <button onclick="home()">Back</button> 
         <button onclick="newRoom()">Create Room →</button>
       </div>
@@ -522,24 +616,29 @@
         <p id="Name2">
           <label for="Name_input_2">Your Name:  </label>
           <input id="Name_input_2" type="text" size="41" onclick="refresh('Name_input_2')" oninput="updateName('Name_input_2')">  
-          <button onclick="document.getElementById('Name2').style.display = 'none'">Enter</button>
-          <br>
+          <button onclick="document.getElementById('Name2').style.display = 'none'">Enter</button><br>
         </p>
-        <p id="ClearRequests" style="color: red"></p>
+        <p id="ClearRequests" class="warning"></p>
+        <div id="Link Output" style="display: none">
+          <p>The generated link will lead to this website and automatically enter the room ID and password. You can also make the link automatically use the color theme you are using now or even enter someone's name automatically.</p><br>
+          <input id="linkForm theme" type="checkbox" class="checkbox" onclick="link.box(1)"><label for="linkForm theme">Include  current  theme</label><br>
+          <input id="linkForm name" type="checkbox" class="checkbox" onclick="link.box(2)"><label for="linkForm name">Enter name automatically</label><br>
+          <label id="linkForm text label" for="linkForm text" style="display: none">Who is this link for? </label><input id="linkForm text" type="text" size="30" style="display: none" oninput="link.refresh()"><br>
+          <p id="link" class="copy_content" onclick="link.copy()">https://wesleymcginn.github.io/Chat</p>
+          <p>Click the link above to copy it.</p><br>
+        </div>
         <p>
           <button onclick="home()">Home</button>
-          <button onclick="clear_chat.vote.yes(true); this.style.display = 'none'">Clear All</button>
+          <button onclick="clear_chat.vote.yes(true); this.style.display = 'none'" id="clear button">Clear All</button>
           <button onclick="theme.next()">New Theme</button>
           <button onclick="newColor()">New Color</button>
-          <button onclick="">Embed</button>
-          <button onclick="">Link</button>
-          <button onclick="">Extension</button>
-        </p>
-        <br>
+          <button onclick="alert('Sorry, the embed feature is not yet available, but it will be available soon.')">Embed</button>
+          <button onclick="link.start()">Link</button>
+          <button onclick="window.open('https://github.com/WesleyMcGinn/Chat/tree/main/Chrome%20Extension', '_blank')">Extension</button>
+        </p><br>
         <textarea id="Write" cols="57" rows="5" onclick="startChat()" onfocus="startChat()">Type a message here....</textarea>
-        <p id="Preview" style="padding: 7px; background-color: #eef5; border-radius: 12px"></p>
-        <button onclick="post()">Post</button>
-        <br>
+        <div id="Preview" style="padding: 7px; background-color: #eef5; border-radius: 12px"></div><br>
+        <button onclick="post()">Post</button><br><br>
         <div id="Messages"></div>
       </div>
     </div>
