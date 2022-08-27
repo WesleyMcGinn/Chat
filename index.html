@@ -405,6 +405,7 @@
             if (cloud_Chat_allChatRoomData[roomNum][4].length >= cloud_Chat_allChatRoomData[roomNum][2] && cloud_Chat_allChatRoomData[roomNum][2] > 1) {
               cloud_Chat_allChatRoomData[roomNum][4] = [];
               cloud_Chat_allChatRoomData[roomNum][3] = [];
+              document.getElementById("clear button").style.display = '';
               printMessages();
             }
             if (cloud_Chat_allChatRoomData[roomNum][4].length == 0) {
