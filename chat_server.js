@@ -49,6 +49,10 @@ function onSocketConnect(ws) {
         for (let client of clients) {
             client.send(chatData);
         }
+        fs.writeFile('C:/Users/admin/Desktop/GitHub Stuff/Chat/chatData.dat', chatData, function(err, file) {
+            if (err) throw err;
+            console.log("New data saved to file.");
+        });
     });
     ws.on('close', function() {
         clients.delete(ws);
@@ -56,12 +60,3 @@ function onSocketConnect(ws) {
         console.log(people);
     });
 }
-
-function saveData() {
-    fs.writeFile('C:/Users/admin/Desktop/GitHub Stuff/Chat/chatData.dat', chatData, function(err, file) {
-        if (err) throw err;
-        console.log("New data saved to file.");
-    });
-}
-
-window.setInterval("saveData()", 60000 * saveInterval);
