@@ -128,7 +128,6 @@
         text-align: center;
       }
     </style>
-    <style id="CSS theme"></style>
   </head>
   <body onload="setup()" onunload="teardown()">
     <div class="center">
@@ -142,7 +141,6 @@
         var wait = null;
         var chatRefresh = null;
         var myColor = randomColor(false, false) + '80';
-        var currentTheme = 0;
         var chatRunning = false;
         var messageContent = '';
         var oldMessageContent = '';
@@ -199,9 +197,6 @@
             document.getElementById("Name_input").value = name;
           } else {
             document.getElementById("Name2").style.display = '';
-          }
-          if (urlParameters.has('t')) {
-            theme.setByNumber(urlParameters.get('t'));
           }
           checkForPassword();
         }
@@ -491,7 +486,6 @@
         }
 
         var link = {
-          themeBox : false,
           nameBox : false,
           start : function() {
             document.getElementById("Link Output").style.display = '';
@@ -500,31 +494,22 @@
           end : function() {
             document.getElementById("Link Output").style.display = 'none';
           },
-          box : function(boxNumber) {
-            if (boxNumber == 1) {
-              this.themeBox = !(this.themeBox);
-              this.refresh()
-            }
-            if (boxNumber == 2) {
-              this.nameBox = !(this.nameBox);
-              if (this.nameBox == true) {
-                document.getElementById("linkForm text").style.display = '';
-                document.getElementById("linkForm text label").style.display = '';
-              } else {
-                document.getElementById("linkForm text").style.display = 'none';
-                document.getElementById("linkForm text label").style.display = 'none';
-                document.getElementById("linkForm text").value = '';
-                this.refresh();
-              }
+          box : function() {
+            this.nameBox = !(this.nameBox);
+            if (this.nameBox == true) {
+              document.getElementById("linkForm text").style.display = '';
+              document.getElementById("linkForm text label").style.display = '';
+            } else {
+              document.getElementById("linkForm text").style.display = 'none';
+              document.getElementById("linkForm text label").style.display = 'none';
+              document.getElementById("linkForm text").value = '';
+              this.refresh();
             }
           },
           refresh : function() {
             document.getElementById("link").innerHTML = "https://wesleymcginn.github.io/Chat?r=" + roomName;
             if (cloud_Chat_allChatRoomData[roomNum][1] != '') {
               document.getElementById("link").innerHTML += "&p=" + cloud_Chat_allChatRoomData[roomNum][1];
-            }
-            if (this.themeBox == true) {
-              document.getElementById("link").innerHTML += "&t=" + currentTheme.toString();
             }
             if (this.nameBox == true) {
               if (document.getElementById("linkForm text").value != '') {
@@ -536,9 +521,6 @@
             this.content = "https://wesleymcginn.github.io/Chat?r=" + roomName;
             if (cloud_Chat_allChatRoomData[roomNum][1] != '') {
               this.content += "&p=" + cloud_Chat_allChatRoomData[roomNum][1];
-            }
-            if (this.themeBox == true) {
-              this.content += "&t=" + currentTheme.toString();
             }
             if (this.nameBox == true) {
               this.content += "&n=" + document.getElementById("linkForm text").value;
@@ -592,9 +574,8 @@
         </p>
         <p id="ClearRequests" class="warning"></p>
         <div id="Link Output" style="display: none">
-          <p>The generated link will lead to this website and automatically enter the room ID and password. You can also make the link automatically use the color theme you are using now or even enter someone's name automatically.</p><br>
-          <input id="linkForm theme" type="checkbox" class="checkbox" onclick="link.box(1)"><label for="linkForm theme">Include  current  theme</label><br>
-          <input id="linkForm name" type="checkbox" class="checkbox" onclick="link.box(2)"><label for="linkForm name">Enter name automatically</label><br>
+          <p>The generated link will lead to this website and automatically enter the room ID and password. You can also make the link automatically enter someone's name automatically.</p><br>
+          <input id="linkForm name" type="checkbox" class="checkbox" onclick="link.box()"><label for="linkForm name">Enter name automatically</label><br>
           <label id="linkForm text label" for="linkForm text" style="display: none">Who is this link for? </label><input id="linkForm text" type="text" size="30" style="display: none" oninput="link.refresh()"><br>
           <p id="link" class="copy_content" onclick="link.copy()">https://wesleymcginn.github.io/Chat</p>
           <p>Click the link above to copy it.</p><br>
@@ -603,7 +584,6 @@
           <button onclick="home()">Home</button>
           <button onclick="clear_chat.vote.yes(true); this.style.display = 'none'" id="clear button">Clear All</button>
           <button onclick="newColor()">New Color</button>
-          <button onclick="alert('Sorry, the embed feature is not yet available, but it will be available soon.')">Embed</button>
           <button onclick="link.start()">Link</button>
           <button onclick="window.open('https://github.com/WesleyMcGinn/Chat/tree/main/Chrome%20Extension', '_blank')">Extension</button>
         </p><br>
