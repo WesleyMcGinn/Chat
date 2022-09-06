@@ -64,4 +64,4 @@ function saveData() {
     });
 }
 
-window.setInterval("saveData()", 60000 * saveInterval);
+setInterval("saveData()", 60000 * saveInterval);
