@@ -5,8 +5,6 @@ const ws_server = new ws.Server({noServer: true});
 var clients = new Set();
 var people = 0;
 
-const saveInterval = 5;
-
 var chatData;
 fs.readFile("C:/Users/admin/Desktop/GitHub Stuff/Chat/chatData.dat", function (err, data) {
     if (err) {
