@@ -130,9 +130,11 @@
   </head>
   <body onload="setup()" onunload="teardown()">
     <div class="center">
+      <script id="Data reader" type="text/javascript"></script>
       <script type="text/javascript">
 
         var socketData;
+        var recent_socketData;
         var name = '';
         var roomName = '';
         var roomPass = '';
@@ -143,6 +145,19 @@
         var chatRunning = false;
         var messageContent = '';
         var oldMessageContent = '';
+
+        let socket = new WebSocket("ws://10.10.1.33:81");
+
+        socket.onmessage = function(event) {
+          document.getElementById("Data reader").innerHTML = "function setData() { recent_socketData = " + event.data + "; socketData = recent_socketData; }";
+          setData();
+        }
+
+        function sendData() {
+          if (socketData != recent_socketData) {
+            socket.send(JSON.stringify(socketData));
+          }
+        }
 
         var urlParameters = {
           link : location.href,
@@ -198,6 +213,7 @@
             document.getElementById("Name2").style.display = '';
           }
           checkForPassword();
+          window.setInterval("sendData()", 100);
         }
 
         function teardown() {
