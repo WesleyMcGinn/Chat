@@ -132,7 +132,7 @@
     <div class="center">
       <script type="text/javascript">
 
-        var cloud_Chat_allChatRoomData;
+        var socketData;
         var name = '';
         var roomName = '';
         var roomPass = '';
@@ -176,8 +176,8 @@
         } function setup$() {
           window.clearInterval(wait);
           document.documentElement.style.cursor = 'auto';
-          if (cloud_Chat_allChatRoomData == NaN || cloud_Chat_allChatRoomData == undefined || cloud_Chat_allChatRoomData == null) {
-            cloud_Chat_allChatRoomData = [['TESTROOM', 'PASSWORD', 0, [], []], ['NO-PASS', '', 0, [], []]];
+          if (socketData == NaN || socketData == undefined || socketData == null) {
+            socketData = [['TESTROOM', 'PASSWORD', 0, [], []], ['NO-PASS', '', 0, [], []]];
           }
           if (urlParameters.has('r')) {
             document.getElementById("Room_input").value = urlParameters.get('r').toUpperCase();
@@ -238,10 +238,10 @@
         function checkForPassword() {
           var foundName = false;
           Room_Name = document.getElementById("Room_input").value.toUpperCase();
-          for (i = 0; i < cloud_Chat_allChatRoomData.length; i++) {
-            if (cloud_Chat_allChatRoomData[i][0] == Room_Name.toUpperCase()) {
+          for (i = 0; i < socketData.length; i++) {
+            if (socketData[i][0] == Room_Name.toUpperCase()) {
               foundName = true;
-              if (cloud_Chat_allChatRoomData[i][1] == '') {
+              if (socketData[i][1] == '') {
                 document.getElementById("getPass").style.display = 'none';
               } else {
                 document.getElementById("getPass").style.display = '';
@@ -258,13 +258,13 @@
           roomName = document.getElementById("New_room_input").value.toUpperCase();
           roomPass = document.getElementById("New_pass_input").value.toUpperCase();
           var ID_good = true;
-          for (i = 0; i < cloud_Chat_allChatRoomData.length; i++) {
-            if (cloud_Chat_allChatRoomData[i][0] == roomName) {
+          for (i = 0; i < socketData.length; i++) {
+            if (socketData[i][0] == roomName) {
               ID_good = false;
             }
           }
           if (ID_good == true) {
-            roomNum =  cloud_Chat_allChatRoomData.push([roomName, roomPass, 0, [], []]);
+            roomNum =  socketData.push([roomName, roomPass, 0, [], []]);
             wait = window.setInterval("enterRoom('" + roomName + "', '" + roomPass + "')", 200);
           } else {
             document.getElementById("Heading").innerHTML = "Create New Chat Room";
@@ -284,21 +284,21 @@
             document.getElementById("Pass_input").value = Room_Pass.toUpperCase();
           }
           var foundName = false;
-          for (i = 0; i < cloud_Chat_allChatRoomData.length; i++) {
-            if (cloud_Chat_allChatRoomData[i][0] == Room_Name.toUpperCase()) {
+          for (i = 0; i < socketData.length; i++) {
+            if (socketData[i][0] == Room_Name.toUpperCase()) {
               foundName = true;
-              if (cloud_Chat_allChatRoomData[i][1] == Room_Pass.toUpperCase() || cloud_Chat_allChatRoomData[i][1] == '') {
+              if (socketData[i][1] == Room_Pass.toUpperCase() || socketData[i][1] == '') {
                 roomNum = i;
                 roomName = Room_Name.toUpperCase();
                 roomPass = null;
-                cloud_Chat_allChatRoomData[i][2] += 1;
+                socketData[i][2] += 1;
                 document.getElementById("Heading").innerHTML = "Chat Room: " + roomName.toUpperCase();
                 document.getElementById("Welcome").style.display = 'none';
                 document.getElementById("Create Chat Room").style.display = 'none';
                 document.getElementById("Chat").style.display = '';
                 clear_chat.check();
                 printMessages();
-                if (cloud_Chat_allChatRoomData[roomNum][4].indexOf(name) == -1) {
+                if (socketData[roomNum][4].indexOf(name) == -1) {
                   document.getElementById("clear button").style.display = '';
                 }
               } else {
@@ -332,9 +332,9 @@
           var previousColor = myColor;
           myColor = randomColor(false, false) + "80";
           document.getElementById("Preview").style.backgroundColor = myColor;
-          for (i = 0; i < cloud_Chat_allChatRoomData[roomNum][3].length; i++) {
-            if (cloud_Chat_allChatRoomData[roomNum][3][i].replace(previousColor, myColor) != cloud_Chat_allChatRoomData[roomNum][3][i]) {
-              cloud_Chat_allChatRoomData[roomNum][3][i] = cloud_Chat_allChatRoomData[roomNum][3][i].replace(previousColor, myColor);
+          for (i = 0; i < socketData[roomNum][3].length; i++) {
+            if (socketData[roomNum][3][i].replace(previousColor, myColor) != socketData[roomNum][3][i]) {
+              socketData[roomNum][3][i] = socketData[roomNum][3][i].replace(previousColor, myColor);
             }
           }
           printMessages();
@@ -343,7 +343,7 @@
         var clear_chat = {
           vote : {
             yes : function(fromButton = false) {
-              cloud_Chat_allChatRoomData[roomNum][4].unshift(name);
+              socketData[roomNum][4].unshift(name);
               document.getElementById("ClearRequests").style.display = 'none';
               document.getElementById("ClearRequests").innerHTML = '';
               document.getElementById("clear button").style.display = 'none';
@@ -354,7 +354,7 @@
               }
             },
             no : function() {
-              cloud_Chat_allChatRoomData[roomNum][4] = [];
+              socketData[roomNum][4] = [];
               document.getElementById("ClearRequests").style.display = 'none';
               document.getElementById("ClearRequests").innerHTML = '';
             }
@@ -367,41 +367,41 @@
             window.clearInterval(this.waitToClose);
           },
           check : function() {
-            if (cloud_Chat_allChatRoomData[roomNum][4].length >= cloud_Chat_allChatRoomData[roomNum][2] && cloud_Chat_allChatRoomData[roomNum][2] > 1) {
-              cloud_Chat_allChatRoomData[roomNum][4] = [];
-              cloud_Chat_allChatRoomData[roomNum][3] = [];
+            if (socketData[roomNum][4].length >= socketData[roomNum][2] && socketData[roomNum][2] > 1) {
+              socketData[roomNum][4] = [];
+              socketData[roomNum][3] = [];
               document.getElementById("clear button").style.display = '';
               printMessages();
             }
-            if (cloud_Chat_allChatRoomData[roomNum][4].length == 0) {
+            if (socketData[roomNum][4].length == 0) {
               if (document.getElementById("ClearRequests").innerHTML != '') {
                 document.getElementById("ClearRequests").style.display = 'none';
                 document.getElementById("ClearRequests").innerHTML = '';
               }
             }
-            if (cloud_Chat_allChatRoomData[roomNum][4].length > 0) {
+            if (socketData[roomNum][4].length > 0) {
               var deletionMessage = '';
-              for (j = 0; j < cloud_Chat_allChatRoomData[roomNum][4].length; j++) {
-                deletionMessage += cloud_Chat_allChatRoomData[roomNum][4][j];
-                if (j == cloud_Chat_allChatRoomData[roomNum][4].length - 2) {
-                  if (cloud_Chat_allChatRoomData[roomNum][4].length == 2) {
+              for (j = 0; j < socketData[roomNum][4].length; j++) {
+                deletionMessage += socketData[roomNum][4][j];
+                if (j == socketData[roomNum][4].length - 2) {
+                  if (socketData[roomNum][4].length == 2) {
                     deletionMessage += " and ";
                   } else {
                     deletionMessage += ", and ";
                   }
                 } else {
-                  if (j < cloud_Chat_allChatRoomData[roomNum][4].length - 2) {
+                  if (j < socketData[roomNum][4].length - 2) {
                     deletionMessage += ", ";
                   }
                 }
               }
-              if (cloud_Chat_allChatRoomData[roomNum][4].length == 1) {
+              if (socketData[roomNum][4].length == 1) {
                 deletionMessage += ' has ';
               } else {
                 deletionMessage += ' have ';
               }
               deletionMessage += 'requested to clear this chat room.  ';
-              if (cloud_Chat_allChatRoomData[roomNum][4].indexOf(name) == -1) {
+              if (socketData[roomNum][4].indexOf(name) == -1) {
                 deletionMessage += '<button onclick="clear_chat.vote.yes()">Agree</button> <button onclick="clear_chat.vote.no()">Disagree</button>';
               } else {
                 deletionMessage += '<button onclick="clear_chat.vote.no()">Undo</button>';
@@ -423,7 +423,7 @@
 
         function post() {
           if (name != '') {
-            cloud_Chat_allChatRoomData[roomNum][3].unshift("<div style='padding: 7px; background-color: " + myColor + "; border-radius: 12px'>" + document.getElementById("Write").value + "<br>-" + name + "</div>");
+            socketData[roomNum][3].unshift("<div style='padding: 7px; background-color: " + myColor + "; border-radius: 12px'>" + document.getElementById("Write").value + "<br>-" + name + "</div>");
             document.getElementById("Write").value = 'Type a message here....';
             document.getElementById("Preview").innerHTML = '';
           } else {
@@ -456,7 +456,7 @@
             if (chatRefresh != null) {
               window.clearInterval(chatRefresh);
             }
-            cloud_Chat_allChatRoomData[roomNum][2] -= 1;
+            socketData[roomNum][2] -= 1;
             document.getElementById("Write").value = '';
             document.getElementById("Preview").innerHTML = '';
           }
@@ -477,7 +477,7 @@
         }
 
         function printMessages() {
-          messageContent = cloud_Chat_allChatRoomData[roomNum][3].join("<!--Next--><br>");
+          messageContent = socketData[roomNum][3].join("<!--Next--><br>");
           if (messageContent != oldMessageContent) {
             document.getElementById("Messages").innerHTML = messageContent;
             oldMessageContent = messageContent;
@@ -507,8 +507,8 @@
           },
           refresh : function() {
             document.getElementById("link").innerHTML = "https://wesleymcginn.github.io/Chat?r=" + roomName;
-            if (cloud_Chat_allChatRoomData[roomNum][1] != '') {
-              document.getElementById("link").innerHTML += "&p=" + cloud_Chat_allChatRoomData[roomNum][1];
+            if (socketData[roomNum][1] != '') {
+              document.getElementById("link").innerHTML += "&p=" + socketData[roomNum][1];
             }
             if (this.nameBox == true) {
               if (document.getElementById("linkForm text").value != '') {
@@ -518,8 +518,8 @@
           },
           copy : function() {
             this.content = "https://wesleymcginn.github.io/Chat?r=" + roomName;
-            if (cloud_Chat_allChatRoomData[roomNum][1] != '') {
-              this.content += "&p=" + cloud_Chat_allChatRoomData[roomNum][1];
+            if (socketData[roomNum][1] != '') {
+              this.content += "&p=" + socketData[roomNum][1];
             }
             if (this.nameBox == true) {
               this.content += "&n=" + document.getElementById("linkForm text").value;
