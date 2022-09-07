@@ -2,7 +2,7 @@
 <html>
   <head>
     <title id="tab_title">Chat</title>
-    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+    <link rel="icon" type="image/x-icon" href="http://192.168.1.100/favicon.ico">
     <style>
       body {
         background-image: linear-gradient(90deg, #1af, #5f7);
@@ -533,7 +533,11 @@
       <noscript><p class="warning"><b><u>ERROR:</u></b> Your web browser does not suppport javascript or you have it disabled in your settings.  Javascript is required to run nearly anything on the internet besides loading basic documents.  As should be expected, JavaScript must be enabled on your computer in order for you to use this.</p></noscript>
       <h1 id="Heading">Chat</h1>
       <div id="Welcome">
-        <p>Welcome to "Chat", a simple, fast-loading, and easy-to-use messaging app developed by <a href="https://github.com/WesleyMcGinn">Wesley McGinn</a>.</p><br>
+        <p>
+          Welcome to "Chat", a simple, fast-loading, and easy-to-use messaging site hosted on the local network.  <br><br>
+          <a href="http://192.168.1.100/LICENSE" target="_blank">License</a>    
+          <a href="https://github.com/WesleyMcGinn/Chat" target="_blank">Code</a>
+        </p><br>
         <p>
           <label for="Name_input">Your Name:  </label>
           <input id="Name_input" type="text" size="41" onclick="refresh('Name_input')" oninput="document.getElementById('Name2').style.display = 'none'; updateName('Name_input')" autofocus>
