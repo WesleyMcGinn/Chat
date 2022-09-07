@@ -24,7 +24,7 @@ http.createServer((req, res) => {
     } else {
         directory = "C:/Users/admin/Desktop/Github Stuff/Chat" + req.url;
     }
-    fs.readFile("C:/Users/admin/Desktop/Github Stuff/Chat/index.html", function (err, data) {
+    fs.readFile(directory, function (err, data) {
         if (err) {
             console.log("404 Error for: " + req.url);
             res.writeHead(404, {'Content-Type': 'text/html'});
