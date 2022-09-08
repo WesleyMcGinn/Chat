@@ -146,7 +146,7 @@
         var messageContent = '';
         var oldMessageContent = '';
 
-        let socket = new WebSocket("ws://192.168.1.100:81");
+        let socket = new WebSocket("ws://192.168.1.100:8081");
 
         socket.onmessage = function(event) {
           document.getElementById("Data reader").innerHTML = "function setData() { recent_socketData = " + event.data + "; socketData = recent_socketData; }";
