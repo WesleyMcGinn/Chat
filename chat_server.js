@@ -31,7 +31,7 @@ http.createServer((req, res) => {
             res.write("<h1>404</h1><h2>The file you have requested does not exist.</h2><h1>:(</h1>");
             return res.end();
         } else {
-            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.writeHead(200);
             res.write(data);
             res.end();
         }
