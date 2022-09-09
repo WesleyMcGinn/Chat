@@ -42,6 +42,9 @@ function onSocketConnect(ws) {
     clients.add(ws);
     people++;
     console.log(people);
+    for (let client of clients) {
+        client.send(chatData);
+    }
     ws.on('message', function (message) {
         chatData = "" + message;
         for (let client of clients) {
