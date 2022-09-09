@@ -187,11 +187,6 @@
         }
         
         function setup() {
-          document.documentElement.style.cursor = "progress";
-          wait = window.setInterval("setup$()", 1000); // Wait enough time for cloud data to load
-        } function setup$() {
-          window.clearInterval(wait);
-          document.documentElement.style.cursor = 'auto';
           if (socketData == NaN || socketData == undefined || socketData == null) {
             socketData = [['TESTROOM', 'PASSWORD', 0, [], []], ['NO-PASS', '', 0, [], []]];
           }
