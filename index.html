@@ -154,7 +154,7 @@
         }
 
         function sendData() {
-          if (socketData != recent_socketData) {
+          if (socketData != recent_socketData && socket.readyState == 1) {
             socket.send(JSON.stringify(socketData));
             recent_socketData = socketData;
           }
