@@ -5,10 +5,13 @@ const ws_server = new ws.Server({noServer: true});
 var clients = new Set();
 var people = 0;
 
+var chatDataDirectory = "C:/Users/admin/Desktop/Server/chatData0.dat";
 var chatData;
-fs.readFile("C:/Users/admin/Desktop/GitHub Stuff/Chat/chatData.dat", function (err, data) {
+fs.readFile(chatDataDirectory, function (err, data) {
     if (err) {
-        console.log("Error:  The file for chat room storage was not found.")
+        console.log("Error:  The file for chat room storage was not found.");
+        console.log("        It will be created when the websocket recieves input.");
+        chatData = "";
     } else {
         chatData = data;
     }
@@ -50,7 +53,7 @@ function onSocketConnect(ws) {
         for (let client of clients) {
             client.send(chatData);
         }
-        fs.writeFile('C:/Users/admin/Desktop/GitHub Stuff/Chat/chatData.dat', chatData, function(err, file) {
+        fs.writeFile(chatDataDirectory, chatData, function(err, file) {
             if (err) throw err;
             console.log("New data saved to file.");
         });
