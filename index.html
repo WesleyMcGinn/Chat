@@ -145,6 +145,7 @@
         var chatRunning = false;
         var messageContent = '';
         var oldMessageContent = '';
+        var baseLink;
 
         let socket = new WebSocket("ws://192.168.1.100:8081");
 
@@ -210,6 +211,11 @@
           }
           checkForPassword();
           window.setInterval("sendData()", 100);
+          if (location.href.indexOf('?') < 0) {
+            baseLink = location.href;
+          } else {
+            baseLink = location.href.substr(0,location.href.indexOf('?'));
+          }
         }
 
         function teardown() {
@@ -244,7 +250,6 @@
             endChat();
             document.getElementById("Chat").style.display = 'none';
           }
-          
         }
 
         function checkForPassword() {
@@ -497,47 +502,40 @@
         }
 
         var link = {
-          nameBox : false,
           start : function() {
-            document.getElementById("Link Output").style.display = '';
-            this.refresh();
-          },
-          end : function() {
-            document.getElementById("Link Output").style.display = 'none';
-          },
-          box : function() {
-            this.nameBox = !(this.nameBox);
-            if (this.nameBox == true) {
-              document.getElementById("linkForm text").style.display = '';
-              document.getElementById("linkForm text label").style.display = '';
-            } else {
-              document.getElementById("linkForm text").style.display = 'none';
-              document.getElementById("linkForm text label").style.display = 'none';
-              document.getElementById("linkForm text").value = '';
+            if (document.getElementById("Link Output").style.display != '') {
+              document.getElementById("Link Output").style.display = '';
               this.refresh();
+            } else {
+              document.getElementById("Link Output").style.display = 'none';
             }
           },
           refresh : function() {
-            document.getElementById("link").innerHTML = "https://wesleymcginn.github.io/Chat?r=" + roomName;
+            document.getElementById("link").innerHTML = baseLink + "?r=" + roomName;
             if (socketData[roomNum][1] != '') {
               document.getElementById("link").innerHTML += "&p=" + socketData[roomNum][1];
             }
-            if (this.nameBox == true) {
+            if (document.getElementById("linkForm name").checked == true) {
+              document.getElementById("linkForm text").style.display = '';
               if (document.getElementById("linkForm text").value != '') {
                 document.getElementById("link").innerHTML += "&n=" + document.getElementById("linkForm text").value;
               }
+            } else {
+              document.getElementById("linkForm text").style.display = 'none';
             }
           },
           copy : function() {
-            this.content = "https://wesleymcginn.github.io/Chat?r=" + roomName;
+            this.copyLink = baseLink + "?r=" + roomName;
             if (socketData[roomNum][1] != '') {
-              this.content += "&p=" + socketData[roomNum][1];
+              this.copyLink += "&p=" + socketData[roomNum][1];
             }
-            if (this.nameBox == true) {
-              this.content += "&n=" + document.getElementById("linkForm text").value;
+            if (document.getElementById("linkForm name").checked == true) {
+              if (document.getElementById("linkForm text").value != '') {
+                this.copyLink += "&n=" + document.getElementById("linkForm text").value;
+              }
             }
-            navigator.clipboard.writeText(this.content);
-            this.end();
+            navigator.clipboard.writeText(this.copyLink);
+            document.getElementById("Link Output").style.display = 'none';
           }
         }
 
@@ -590,9 +588,9 @@
         <p id="ClearRequests" class="warning"></p>
         <div id="Link Output" style="display: none">
           <p>The generated link will lead to this website and automatically enter the room ID and password. You can also make the link automatically enter someone's name automatically.</p><br>
-          <input id="linkForm name" type="checkbox" class="checkbox" onclick="link.box()"><label for="linkForm name">Enter name automatically</label><br>
-          <label id="linkForm text label" for="linkForm text" style="display: none">Who is this link for? </label><input id="linkForm text" type="text" size="30" style="display: none" oninput="link.refresh()"><br>
-          <p id="link" class="copy_content" onclick="link.copy()">https://wesleymcginn.github.io/Chat</p>
+          <input id="linkForm name" type="checkbox" class="checkbox" onclick="link.refresh()"><label for="linkForm name">Enter name automatically</label><br>
+          <label for="linkForm text" style="display: none">Who is this link for? </label><input id="linkForm text" type="text" size="30" style="display: none" oninput="link.refresh()"><br>
+          <p id="link" class="copy_content" onclick="link.copy()"></p>
           <p>Click the link above to copy it.</p><br>
         </div>
         <p>
