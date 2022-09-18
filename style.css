@@ -1,0 +1,122 @@
+body {
+  background-image: linear-gradient(90deg, #1af, #5f7);
+  background-color: #3db;
+}
+h1 {
+  color: #ff0;
+  font-size: 35px;
+  font-family: 'Franklin Gothic Medium', sans-serif;
+  background-color: #0005;
+  padding: 7px;
+  border-radius: 12px;
+  margin-top: 0px;
+}
+h1:hover {
+  cursor: default;
+}
+p {
+  color: #000;
+  font-size: 15px;
+  font-family: Verdana, sans-serif;
+}
+div {
+  color: #000;
+  font-size: 15px;
+  font-family: Verdana, sans-serif;
+}
+label {
+  color: #000;
+  font-size: 15px;
+  font-family: Verdana, sans-serif;
+}
+input {
+  color: #00f;
+  background-image: linear-gradient(#eef, #0ff);
+  font-size: 15px;
+  font-family: Tahoma, Verdana, sans-serif;
+  padding: 7px;
+  border-radius: 15px;
+  border-style: solid;
+  border-color: #017;
+  border-width: 1px;
+}
+input:hover {
+  border-style: dashed;
+  cursor: text;
+}
+.checkbox:hover {
+  cursor: pointer;
+}
+input:active {
+  background-image: linear-gradient(#eef, #eff);
+}
+button {
+  color: #000;
+  background-image: linear-gradient(#0ff, #00f);
+  font-size: 15px;
+  font-family: Georgia, Times, serif;
+  font-weight: 800;
+  padding: 7px;
+  border-radius: 15px;
+  border-style: solid;
+  border-color: #017;
+  border-width: 1px;
+}
+button:hover {
+  background-image: linear-gradient(#7ff, #57f);
+  cursor: pointer;
+}
+button:active {
+  border-width: 2px;
+  cursor: grabbing;
+}
+textarea {
+  color: #00f;
+  background-color: #eef7;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #017;
+  padding: 5px;
+  font-family: Tahoma, Verdana, sans-serif;
+  border-radius: 12px;
+}
+textarea:hover {
+  border-style: dashed;
+  cursor: text;
+}
+a:visited {
+  color: #0a2;
+}
+a:link {
+  color: #00f;
+}
+a:hover {
+  font-size: 16px;
+  cursor: pointer;
+}
+a:active {
+  font-size: 15px;
+  cursor: grabbing;
+  background-color: #0ff;
+}
+table {
+  border-style: none;
+}
+.warning {
+  color: red;
+}
+.copy_content {
+  font-family: monospace, sans-serif;
+  font-size: 13px;
+  background-color: #0004;
+  color: #000;
+  border-radius: 12px;
+  padding: 7px;
+}
+.copy_content:hover {
+  cursor: copy;
+  color: #0ff;
+}
+.center {
+  text-align: center;
+}
