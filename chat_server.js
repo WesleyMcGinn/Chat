@@ -97,7 +97,7 @@ function websocketHandler(ws) {
             sendToRoom(parseInt(dataData)[0], "M" + dataData[1]);
             saveData();
         }
-        if (dataType == "O") {
+        if (dataType == "O") { // Change Color
             dataData = eval(dataData);
             var myColor = generateColor();
             for (i = 0; i < chatData[dataData[0]][3].length; i++) {
@@ -108,11 +108,11 @@ function websocketHandler(ws) {
             sendToRoom(parseInt(dataData)[0], "O" + JSON.stringify(chatData[parseInt(dataData[0])]));
             saveData();
         }
-        if (dataType == ".") {
+        if (dataType == ".") { // Get all data
             if (dataData != adminPassword) {
                 ws.send(".Error!  Your password was incorrect and you have been labled as a threat!");
                 console.log("HACKER DETECTED!");
-                console.log("  Time: " + (new Date()).toString())
+                console.log("  Time: " + (new Date()).toString());
                 console.log("  Incorrect Password Used: " + datadata);
                 console.log("  Attempted to: Obtain all data");
                 console.log("  Danger Level: 1 (Low)");
@@ -120,11 +120,11 @@ function websocketHandler(ws) {
                 ws.send("." + JSON.stringify(chatData));
             }
         }
-        if (dataType == ",") {
+        if (dataType == ",") { // Clear all data
             if (dataData != adminPassword) {
-                ws.send(".Error!  Your password was incorrect and you have been labled as a threat!");
+                ws.send(",Error!  Your password was incorrect and you have been labled as a threat!");
                 console.log("HACKER DETECTED!");
-                console.log("  Time: " + (new Date()).toString())
+                console.log("  Time: " + (new Date()).toString());
                 console.log("  Incorrect Password Used: " + datadata);
                 console.log("  Attempted to: Clear all data");
                 console.log("  Danger Level: 2 (Considerably Dangerous)");
@@ -134,9 +134,25 @@ function websocketHandler(ws) {
                 chatData = defaultChatData;
                 saveData();
                 console.log("ALL CHAT DATA CLEARED:");
-                console.log("  Time: " + (new Date()).toString())
+                console.log("  Time: " + (new Date()).toString());
                 console.log("  Rooms Deleted: " + roomsToBeErased);
                 console.log("  Backup Saved: true");
+            }
+        }
+        if (dataType == "}") { // Change admin password
+            dataData = eval(dataData);
+            if (dataData[0] != adminPassword) {
+                ws.send("}Error!  Your password was incorrect and you have been labled as a threat!");
+                console.log("HACKER DETECTED!");
+                console.log("  Time: " + (new Date()).toString())
+                console.log("  Incorrect Password Used: " + datadata[0]);
+                console.log("  Attempted to: Reset Admin Password to: " + dataData[1]);
+                console.log("  Danger Level: 3 (High Risk)");
+            } else {
+                adminPassword = dataData[1]; dataData = null;
+                fs.writeFile("C:/Users/admin/adminData/pw.dat",adminPassword,function(err,file){if(err){throw err;}});
+                console.log("ADMIN PASSWORD RESET:");
+                console.log("  Time: " + (new Date()).toString());
             }
         }
     });
