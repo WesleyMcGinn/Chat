@@ -46,7 +46,7 @@ function updateName(element) {
     document.getElementById("Name Input 1").value = username;
     document.getElementById("Name Input 2").value = username;
     if (element.id == "Name Input 1") {
-        document.getElementById("Name Input 2").style.display = 'none';
+        document.getElementById("Enter Name In Room").style.display = 'none';
     }
 }
 

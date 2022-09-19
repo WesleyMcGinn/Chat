@@ -20,43 +20,39 @@
           Welcome to "Chat", a simple, fast-loading, and easy-to-use messaging site hosted on the local network.
         </p><br>
         <p>
-          <label for="Name_input">Your Name:  </label>
-          <input id="Name_input" type="text" size="41" onclick="refresh('Name_input')" oninput="document.getElementById('Name2').style.display = 'none'; updateName('Name_input')" autofocus>
+          <label for="Name Input 1">Your Name:  </label>
+          <input id="Name Input 1" type="text" size="41" onclick="refreshBlank(this)" oninput="updateName(this)" autofocus>
         </p><br>
         <p>
-          <label for="Room_input">Chat Room ID: </label>
-          <input id="Room_input" type="text" size="7" oninput="checkForPassword()" onclick="refresh('Room_input')"> 
+          <label for="Room Input">Chat Room ID: </label>
+          <input id="Room Input" type="text" size="7" oninput="checkForPassword()" onclick="refresh('Room_input')"> 
           OR 
           <button onclick="proposeNewRoom()">Create New Chat Room</button>
         </p>
-        <p id="getPass" style="display: none">
-          <label for="Pass_input">Chat Room Password: </label>
-          <input id="Pass_input" type="password" size="30" onclick="refresh('Pass_input')">
+        <p id="Password Needed">
+          <label for="Password Input">Chat Room Password: </label>
+          <input id="Password Input" type="password" size="30" onclick="refreshBlank(this)">
         </p><br>
         <button onclick="enterRoom('', '')">GO</button>
       </div>
       <div id="Create Chat Room" style="display: none">
         <p>
-          <label for="New_room_input">ID for New Room: </label>
-          <input id="New_room_input" type="text" size="7" onclick="refresh('New_room_input')">
+          <label for="New Room Name Input">New Room ID: </label>
+          <input id="New Room Name Input" type="text" size="12" onclick="refreshBlank(this)">
         </p>
         <p>
-          <label for="New_pass_input">Room Password*:  </label>
-          <input id="New_pass_input" type="text" size="7">
-        </p>
-        <p>
-          *Leave the password space blank to disable the need to type in a password to get in.  It will then be possible, yet unlikely, for a random person to access your Chat Room.
+          <label for="New Room Password Input">Room Password: </label>
+          <input id="New Room Password Input" type="text" size="12">
         </p><br>
         <button onclick="home()">Back</button> 
         <button onclick="newRoom()">Create Room</button>
       </div>
       <div id="Chat" style="display: none">
-        <p id="Name2">
-          <label for="Name_input_2">Your Name:  </label>
-          <input id="Name_input_2" type="text" size="41" onclick="refresh('Name_input_2')" oninput="updateName('Name_input_2')">  
-          <button onclick="document.getElementById('Name2').style.display = 'none'">Enter</button><br>
+        <p id="Enter Name In Room">
+          <label for="Name Input 2">Your Name:  </label>
+          <input id="Name Input 2" type="text" size="41" onclick="refreshBlank(this)" oninput="updateName(this)">  
+          <button onclick="document.getElementById('Enter Name In Room').style.display = 'none'">Enter</button><br>
         </p>
-        <p id="ClearRequests" class="warning"></p>
         <div id="Link Output" style="display: none">
           <p>The generated link will lead to this website and automatically enter the room ID and password. You can also make the link automatically enter someone's name automatically.</p><br>
           <input id="linkForm name" type="checkbox" class="checkbox" onclick="link.refresh()"><label for="linkForm name">Enter name automatically</label><br>
