@@ -1,9 +1,10 @@
-// This file holds simple functions for operating the Chat interface.
+// This file holds simple functions that do not need to be separated into tiny files.
 
 // Global Variables:
-var chatMessages;
-var roomNumber;
+var chatMessages = [];
+var roomNumber = null;
 var username = '';
+var myColor = '';
 var baseLink;
 
 // URL Parameter Object:
@@ -50,6 +51,15 @@ function updateName(element) {
     }
 }
 
+// Color Generator:
+function generateColor() {
+    var output = '';
+    for (i = 0; i < 6; i++) {
+        output += (Math.floor(Math.random()*16).toString(16));
+    }
+    return "#" + output + "80";
+}
+
 // Setup (Runs when client enters site):
 function setup() {
 
@@ -74,12 +84,14 @@ function setup() {
 
     // Join Room:
     if (urlParameters.has('r')) {
-
+        room.try(urlParameters.get('r').toUpperCase(), document.getElementById('Password Input').value);
     }
 
+    // Get Random Color:
+    myColor = generateColor();
 }
 
 // Teardown (Runs when client leaves site)
 function teardown() {
-
+    room.exit();
 }
