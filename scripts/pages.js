@@ -1,4 +1,4 @@
-// This file contains the code for changing pages
+// This file contains the code for changing pages.
 
 function page(page_number) {
     if (page_number == 1 || page_number == "home") {
