@@ -1,5 +1,6 @@
 const chatDataDirectory = "C:/Users/admin/Desktop/Server/chatData0.dat";
 const backupDataDirectory = "C:/Users/admin/Desktop/Server/backup";
+const reportLevel = 3;
 
 const fs = require('fs');
 const http = require('http');
@@ -9,6 +10,7 @@ var clients = new Set();
 var people = 0;
 var chatData;
 const defaultChatData = [['TESTROOM', 'PASSWORD', [], ["<div style='padding: 7px; background-color: #072dc780; border-radius: 12px'>Welcome to the testroom!  This is where programming for Chat is tested.</div>"]]];
+const redirectPages = ['', '/', '/index.html', '/chat', 'chat.html'];
 
 // Retrieve chat data from file:
 fs.readFile(chatDataDirectory, function (err, data) {
@@ -17,7 +19,7 @@ fs.readFile(chatDataDirectory, function (err, data) {
         console.log("        It will be created when the websocket recieves input.");
         chatData = defaultChatData;
     } else {
-        chatData = data;
+        chatData = eval(data);
     }
 });
 
@@ -25,13 +27,20 @@ var adminPassword;fs.readFile("C:/Users/admin/adminData/pw.dat",function(err,dat
 
 // HTML Server:
 http.createServer((req, res) => {
-    fs.readFile("C:/Users/admin/Desktop/Github Stuff/Chat/" + req.url, function (err, data) {
-        if (err || req.url == '') {
-            fs.readFile("C:/Users/admin/Desktop/Github Stuff/Chat/index.html", function (err2, data2) {
+    var requestedFile = req.url;
+    if (redirectPages.includes(requestedFile)) {
+        requestedFile = '/page.html';
+    }
+    if (requestedFile.includes('server') || requestedFile.includes('no_send-')) {
+        requestedFile = '/page.html';
+    }
+    fs.readFile("C:/Users/admin/Desktop/Github Stuff/Chat/", function (err, data) {
+        if (err) {
+            fs.readFile("C:/Users/admin/Desktop/Github Stuff/Chat/page.html", function (err2, data2) {
                 if (err2) {
-                    console.log("ERROR 404: index.html not found!");
+                    console.log("ERROR 404: page.html not found!");
                     res.writeHead(404);
-                    res.write("<h1>404</h1><h2>Page not found.    ): </h2>");
+                    res.write("<h1>404</h1><h2>Page not found.</h2><h1>):</h1>");
                 } else {
                     res.writeHead(200);
                     res.write(data2);
@@ -59,12 +68,28 @@ function websocketHandler(ws) {
     console.log("Current Users + : " + people.toString());
 
     ws.on('message', function (message) {
+
         var incomingData = "" + message;
         var dataType = incomingData.substring(0, 1);
         var dataData = incomingData.substring(1, incomingData.length);
+
+        if (reportLevel >= 3) {
+            console.log('"' + dataType + '" <- ' + (dataData.length).toString() + ' bytes  -  ' + (new Date()).toString().slice(0,24));
+        } else {
+            if (reportLevel >= 2) {
+                console.log('"' + dataType + '" <- ' + (dataData.length).toString() + ' bytes');
+            } else {
+                if (reportLevel >= 1) {
+                    console.log(dataType);
+                }
+            }
+        }
+
+
         if (dataType == "G") { // Get Message List
             ws.send("G" + JSON.stringify(chatData[parseInt(dataData)]));
         }
+
         if (dataType == "V") { // Validate Room Name and Password
             var validated = "N";
             for (i = 0; i < chatData.length; i++) {
@@ -75,28 +100,34 @@ function websocketHandler(ws) {
             }
             ws.send("V" + validated);
         }
+
         if (dataType == "S") { // Test Network Speed
-            ws.send("S" + new Date().getTime().toString());
+            ws.send("S" + (new Date()).getTime().toString());
         }
+
         if (dataType == "N") { // New Chat Room
             dataData = eval(dataData);
             ws.send("N" + (chatData.push([dataData[0], dataData[1], [], []])).toString());
             saveData();
         }
+
         if (dataType == "L") { // Leave Chat Room
             chatData.splice(chatData[parseInt(dataData)][2].indexOf(ws), 1)[0].send("L");
         }
+
         if (dataType == "C") { // Clear Chat Room
             chatData[parseInt(dataData)][3] = [];
             sendToRoom(parseInt(dataData), "Cleared");
             saveData();
         }
+
         if (dataType == "M") { // Send Message
             dataData = eval(dataData);
             chatData[parseInt(dataData[0])][3].unshift(dataData[1]);
             sendToRoom(parseInt(dataData)[0], "M" + dataData[1]);
             saveData();
         }
+
         if (dataType == "O") { // Change Color
             dataData = eval(dataData);
             var myColor = generateColor();
@@ -108,9 +139,10 @@ function websocketHandler(ws) {
             sendToRoom(parseInt(dataData)[0], "O" + JSON.stringify(chatData[parseInt(dataData[0])]));
             saveData();
         }
+
         if (dataType == ".") { // Get all data
             if (dataData != adminPassword) {
-                ws.send(".Error!  Your password was incorrect and you have been labled as a threat!");
+                ws.send(".!!");
                 console.log("HACKER DETECTED!");
                 console.log("  Time: " + (new Date()).toString());
                 console.log("  Incorrect Password Used: " + datadata);
@@ -120,9 +152,10 @@ function websocketHandler(ws) {
                 ws.send("." + JSON.stringify(chatData));
             }
         }
+
         if (dataType == ",") { // Clear all data
             if (dataData != adminPassword) {
-                ws.send(",Error!  Your password was incorrect and you have been labled as a threat!");
+                ws.send(",!!");
                 console.log("HACKER DETECTED!");
                 console.log("  Time: " + (new Date()).toString());
                 console.log("  Incorrect Password Used: " + datadata);
@@ -139,10 +172,11 @@ function websocketHandler(ws) {
                 console.log("  Backup Saved: true");
             }
         }
+
         if (dataType == "}") { // Change admin password
             dataData = eval(dataData);
             if (dataData[0] != adminPassword) {
-                ws.send("}Error!  Your password was incorrect and you have been labled as a threat!");
+                ws.send("}!!");
                 console.log("HACKER DETECTED!");
                 console.log("  Time: " + (new Date()).toString())
                 console.log("  Incorrect Password Used: " + datadata[0]);
@@ -155,6 +189,7 @@ function websocketHandler(ws) {
                 console.log("  Time: " + (new Date()).toString());
             }
         }
+
     });
 
     ws.on('close', function() {
@@ -170,11 +205,11 @@ function saveData(backup = false) {
     for (i = 0; i < chatData2.length; i++) {
         chatData2[i][2] = [];
     }
-    fs.writeFile(chatDataDirectory, chatData2, function(err, file) {
+    fs.writeFile(chatDataDirectory, JSON.stringify(chatData2), function(err, file) {
         if (err) { throw err; }
     });
     if (backup == true) {
-        fs.writeFile(backupDataDirectory + generateColor() + ".dat", chatData2, function(err, file) {
+        fs.writeFile(backupDataDirectory + generateColor() + ".dat", JSON.stringify(chatData2), function(err, file) {
             if (err) { throw err; }
         });
     }
