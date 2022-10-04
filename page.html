@@ -4,9 +4,11 @@
     <title id="Tab">Chat</title>
     <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
     <link rel="stylesheet" href="./style.css">
-    <script type="text/javascript" src="./scripts/window.js"></script>
-    <script type="text/javascript" src="./scripts/pages.js"></script>
+    <script type="text/javascript" src="./scripts/other.js"></script>
     <script type="text/javascript" src="./scripts/websocket.js"></script>
+    <script type="text/javascript" src="./scripts/pages.js"></script>
+    <script type="text/javascript" src="./scripts/rooms.js"></script>
+    <script type="text/javascript" src="./scripts/link.js"></script>
   </head>
   <body onload="setup()" onunload="teardown()">
     <div class="center">
@@ -38,11 +40,11 @@
       <div id="New" style="display: none">
         <p>
           <label for="New Room Name Input">New Room ID: </label>
-          <input id="New Room Name Input" type="text" size="12" onclick="refreshBlank(this)">
+          <input id="New Room Name Input" type="text" size="24" onclick="refreshBlank(this)">
         </p>
         <p>
           <label for="New Room Password Input">Room Password: </label>
-          <input id="New Room Password Input" type="text" size="12">
+          <input id="New Room Password Input" type="text" size="24">
         </p><br>
         <button onclick="home()">Back</button> 
         <button onclick="newRoom()">Create Room</button>
@@ -62,13 +64,13 @@
         </div>
         <p>
           <button onclick="page('home')">Home</button>
-          <button onclick="sendData('C', roomNumber.toString());">Clear All</button>
+          <button onclick="sendData('C', roomNumber);">Clear All</button>
           <button onclick="sendData('O', JSON.stringify([roomNumber.toString(), myColor]))">New Color</button>
           <button onclick="link.toggle()">Link</button>
         </p><br>
-        <textarea id="Write" cols="57" rows="5" onclick="startChat()" onfocus="startChat()">Type a message here....</textarea>
+        <textarea id="Write" cols="57" rows="5" onclick="if(this.value != 'Type a message here....'){refreshBlank(this)}">Type a message here....</textarea>
         <div id="Preview" style="padding: 7px; background-color: #eef5; border-radius: 12px"></div><br>
-        <button onclick="post()">Post</button><br><br>
+        <button onclick="room.post()">Post</button><br><br>
         <div id="Messages"></div>
       </div>
     </div>
