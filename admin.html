@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title id="Tab">Chat - ADMIN</title>
+    <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+    <style>
+      body {
+        color: white;
+        background-color: rgb(0, 87, 100);
+        text-align: center;
+      }
+      h1 {
+        color: white;
+        background-color: #07f5;
+        padding: 7px;
+        border-radius: 50px;
+        text-align: center;
+      }
+      input {
+        color: #cde2;
+        background-image: linear-gradient(rgb(0, 87, 100), rgb(0, 0, 0));
+        padding: 7px;
+        border-radius: 100%;
+        text-align: center;
+        font-size: 25px;
+      }
+      input:hover {
+        color: white;
+      }
+      button {
+        color: #cde;
+        background-image: linear-gradient(rgb(0, 87, 100), rgb(0, 0, 0));
+        padding: 7px;
+        border-radius: 100%;
+        text-align: center;
+        font-size: 25px;
+      }
+      button:hover {
+        color: white;
+      }
+      textarea {
+        color: white;
+
+      }
+    </style>
+    <script>
+      const serverIP = "192.168.1.100";
+      var toSend = "";
+      var waitingToSend = null;
+      var networkDelay = '?';
+
+      let socket = new WebSocket("ws://" + serverIP + ":81");
+
+      function sendData(sendDataType, sendData) {
+          if (socket.readyState == 1) {
+              socket.send(sendDataType.slice(0,1) + sendData.toString());
+          } else {
+              if (waitingToSend == null) {
+                  waitingToSend = window.setInterval("sendWaitingData()", 100);
+              }
+              toSend += ("socket.send(" + sendDataType.slice(0,1) + sendData + ");");
+          }
+      }
+
+      function sendWaitingData() {
+          if (socket.readyState == 1) {
+              window.clearInterval(waitingToSend);
+              waitingToSend = null;
+              eval(toSend);
+              toSend = "";
+          }
+      }
+
+      socket.onmessage = function(event) {
+        var incomingData = "" + event.data;
+        var dataType = incomingData.substring(0, 1);
+        var dataData = incomingData.substring(1, incomingData.length);
+        if (dataData == "!!") {
+          document.body.innerHTML = "<h1 style='font-size: 500px; text-align: center; color: white; background-color: red; border-radius: 100px'>!</h1>";
+          localStorage.setItem("!!", true);
+          location.href = "about:blank";
+        } else {
+          localStorage.setItem("!!", false);
+          if (dataType == ".") {
+            document.getElementById("allChatData").value = dataData;
+          }
+          if (dataType == ",") {
+            alert("Chat Data Sucessfully reset to default.");
+          }
+          if (dataType == "}") {
+            alert("Password Changed Sucessfully.");
+          }
+          if (dataType == "!") {
+            alert("IMPORTANT MESSAGE:\n" + dataData);
+          }
+        }
+      }
+
+      function validatePassword() {
+        sendData(".", document.getElementById('pass').value);
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Chat Administration Page</h1>
+    <p>If you do not know the administrator password, please do not guess at it - BAD THINGS WILL HAPPEN!</p>
+    <p>The password is held in maximum security and is impossible to hack.  It is stored on the server outside of the folder that holds the returnable files.  It cannot be accessed wirelessly.  What you type below can only be sent to the server and validated... or invalidated.</p>
+    <br>
+    <p>Enter the administrator password below:</p>
+    <p><input id="pass" type="password"></p>
+    <br>
+    <p><button>VALIDATE</button></p>
+    <br>
+    <textarea id="allChatData" width="97%" height="80%">Awaiting Password....</textarea>
+  </body>
+</html>
