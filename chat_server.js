@@ -136,7 +136,7 @@ function websocketHandler(ws) {
                     chatData[dataData[0]][3][i] = chatData[dataData[0]][3][i].replace(dataData[1], myColor);
                 }
             }
-            sendToRoom(parseInt(dataData)[0], "O" + JSON.stringify(chatData[parseInt(dataData[0])]));
+            sendToRoom(parseInt(dataData[0]), "O" + JSON.stringify(chatData[parseInt(dataData[0])]));
             saveData();
         }
 
