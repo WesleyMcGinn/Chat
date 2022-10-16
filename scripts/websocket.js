@@ -94,4 +94,7 @@ socket.onerror = function(err) {
     document.body.innerHTML = "<h1>Error</h1><h2>An error occured in the server.<br><br><b>Error Info:</b><br>" + (err.message).toString() + "</h2>";
 }
 
-socket.onclose = location.reload();
+socket.onclose = function() {
+    alert("The server has closed.\nYou will not be able to use this website until it is working again.");
+    location.reload();
+}
