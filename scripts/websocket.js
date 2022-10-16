@@ -31,10 +31,12 @@ socket.onmessage = function(event) {
     var incomingData = "" + event.data;
     var dataType = incomingData.substring(0, 1);
     var dataData = incomingData.substring(1, incomingData.length);
+
     if (dataType == "G") {
         chatMessages = eval(dataData);
         room.enter();
     }
+
     if (dataType == "V") {
         if (dataData == "N") {
             document.getElementById("Password Input").style.color = "red";
@@ -44,10 +46,12 @@ socket.onmessage = function(event) {
             sendData('G', roomNumber);
         }
     }
+
     if (dataType == "S") {
         networkDelay = ((new Date()).getTime().toString()) - parseInt(dataData);
         console.log("Network Delay: " + networkDelay.toString() + " ms");
     }
+
     if (dataType == "N") {
         if (dataData == "N") {
             document.getElementById("New Room Name Input").style.color = "red";
@@ -58,16 +62,20 @@ socket.onmessage = function(event) {
             sendData('G', roomNumber);
         }
     }
+
+
     if (dataType == "M") {
         if (document.documentElement.style.cursor == "progress") {
             document.documentElement.style.cursor = "pointer";
         }
         chatMessages.unshift(dataData);
         room.enter();
+
+
     }
 }
 
-socket.onerror = function (err) {
+socket.onerror = function(err) {
     document.body.style.color = "white";
     document.body.style.backgroundImage = "linear-gradient(#e10, #e10)";
     document.body.style.backgroundColor = "red";
