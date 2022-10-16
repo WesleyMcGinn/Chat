@@ -8,7 +8,6 @@
     <script type="text/javascript" src="./scripts/websocket.js"></script>
     <script type="text/javascript" src="./scripts/pages.js"></script>
     <script type="text/javascript" src="./scripts/rooms.js"></script>
-    <script type="text/javascript" src="./scripts/link.js"></script>
   </head>
   <body onload="setup()" onunload="teardown()">
     <div class="center">
@@ -55,18 +54,10 @@
           <input id="Name Input 2" type="text" size="41" onclick="refreshBlank(this)" oninput="updateName(this)">  
           <button onclick="document.getElementById('Enter Name In Room').style.display = 'none'">Enter</button><br>
         </p>
-        <div id="Link Output" style="display: none">
-          <p>The generated link will lead to this website and automatically enter the room ID and password. You can also make the link automatically enter someone's name automatically.</p><br>
-          <input id="linkForm name" type="checkbox" class="checkbox" onclick="link.refresh()"><label for="linkForm name">Enter name automatically</label><br>
-          <label for="linkForm text" style="display: none">Who is this link for? </label><input id="linkForm text" type="text" size="30" style="display: none" oninput="link.refresh()"><br>
-          <p id="link" class="copy_content" onclick="link.copy()"></p>
-          <p>Click the link above to copy it.</p><br>
-        </div>
         <p>
           <button onclick="page('home')">Home</button>
           <button onclick="sendData('C', roomNumber);">Clear All</button>
           <button onclick="sendData('O', JSON.stringify([roomNumber.toString(), myColor]))">New Color</button>
-          <button onclick="link.toggle()">Link</button>
         </p><br>
         <textarea id="Write" cols="57" rows="5" onclick="if(this.value != 'Type a message here....'){refreshBlank(this)}">Type a message here....</textarea>
         <div id="Preview" style="padding: 7px; background-color: #eef5; border-radius: 12px"></div><br>
