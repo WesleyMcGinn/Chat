@@ -190,6 +190,20 @@ function websocketHandler(ws) {
             }
         }
 
+        if (dataType == "!") { // Broadcast Important Message
+            dataData = eval(dataData);
+            if (dataData[0] != adminPassword) {
+                ws.send("!!!");
+                console.log("HACKER DETECTED!");
+                console.log("  Time: " + (new Date()).toString())
+                console.log("  Incorrect Password Used: " + datadata[0]);
+                console.log("  Attempted to: Broadcast this message to all Chat users: " + dataData[1]);
+                console.log("  Danger Level: 2 (Considerably Dangerous)");
+            } else {
+                for(let client of clients) { client.send(dataData[1]); }
+            }
+        }
+
     });
 
     ws.on('close', function() {
