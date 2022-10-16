@@ -1,6 +1,5 @@
 // This file holds the code for sending and recieving messages to and from the server via websocket.
 
-const serverIP = "192.168.1.100";
 var toSend = "";
 var waitingToSend = null;
 var networkDelay = '?';
