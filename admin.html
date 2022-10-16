@@ -15,6 +15,14 @@
         padding: 7px;
         border-radius: 50px;
         text-align: center;
+        font-family: fantasy, sans-serif;
+      }
+      div {
+        background-color: #def2;
+        border-radius: 12px;
+        padding: 12px;
+        margin-left: 5%;
+        margin-right: 5%;
       }
       input {
         color: #cde2;
@@ -26,6 +34,7 @@
       }
       input:hover {
         color: white;
+        cursor: pointer;
       }
       button {
         color: #cde;
@@ -33,14 +42,18 @@
         padding: 7px;
         border-radius: 100%;
         text-align: center;
-        font-size: 25px;
+        font-size: 20px;
       }
       button:hover {
         color: white;
+        cursor: pointer;
       }
       textarea {
-        color: white;
-
+        color: #cde;
+        background-image: linear-gradient(rgb(0, 87, 100), rgb(0, 0, 0));
+      }
+      .warning {
+        color: #f12;
       }
     </style>
     <script>
@@ -77,10 +90,10 @@
         var dataData = incomingData.substring(1, incomingData.length);
         if (dataData == "!!") {
           document.body.innerHTML = "<h1 style='font-size: 500px; text-align: center; color: white; background-color: red; border-radius: 100px'>!</h1>";
-          localStorage.setItem("!!", true);
+          localStorage.setItem("!!", 'true');
           location.href = "about:blank";
         } else {
-          localStorage.setItem("!!", false);
+          localStorage.setItem("!!", 'false');
           if (dataType == ".") {
             document.getElementById("allChatData").value = dataData;
           }
@@ -99,18 +112,74 @@
       function validatePassword() {
         sendData(".", document.getElementById('pass').value);
       }
+
+      function clearData() {
+        if (prompt('If you really want to clear all the chat data, please type "CLEAR ALL" to confirm.') == "CLEAR ALL") {
+          sendData(",", document.getElementById('pass').value);
+        } else {
+          alert("Data was not cleared.");
+        }
+      }
+
+      function sendMessage() {
+        if (prompt('If you really want to send this message to all people currently on Chat, please type "SEND" to confirm.') == "SEND") {
+          sendData("!", JSON.stringify([document.getElementById('pass').value, document.getElementById('sender').value]));
+        } else {
+          alert("Message was not sent.");
+        }
+      }
+
+      function passwordChange() {
+        if (prompt('If you really want to change the administration password, please type "ABSOLUTELY" to confirm.') == "ABSOLUTELY") {
+          sendData("}", JSON.stringify([document.getElementById('pass').value, document.getElementById('newPass').value]));
+        } else {
+          alert("Password was not changed.");
+          document.getElementById('newPass').value = '';
+        }
+      }
+
+      function villainCheck(exception) {
+        if (exception == true) {
+          localStorage.setItem("!!", 'false');
+        }
+        if (localStorage.getItem("!!") == 'true' && exception == false) {
+          document.body.innerHTML = "<h1 style='font-size: 500px; text-align: center; color: white; background-color: red; border-radius: 100px'>!</h1>";
+          while (true) {
+            window.close();
+          }
+        }
+      }
     </script>
   </head>
-  <body>
+  <body onload="villainCheck(false)">
     <h1>Chat Administration Page</h1>
-    <p>If you do not know the administrator password, please do not guess at it - BAD THINGS WILL HAPPEN!</p>
-    <p>The password is held in maximum security and is impossible to hack.  It is stored on the server outside of the folder that holds the returnable files.  It cannot be accessed wirelessly.  What you type below can only be sent to the server and validated... or invalidated.</p>
+    <p class="warning">If you do not know the administrator password, please do not guess at it - <b>BAD THINGS WILL HAPPEN!</b></p>
     <br>
-    <p>Enter the administrator password below:</p>
-    <p><input id="pass" type="password"></p>
+    <div>
+      <b>DANGER ZONE:</b><br>
+      Enter the administrator password below:<br><br>
+      <input id="pass" type="password"><br><br>
+      <button onclick="validatePassword()">VALIDATE</button>
+    </div>
     <br>
-    <p><button>VALIDATE</button></p>
+    <div>
+      <p>All Chat Data:</p>
+      <textarea id="allChatData" cols="100" rows="20">Awaiting Password....</textarea><br>
+      <button onclick="validatePassword()">PULL</button>
+      <button onclick="clearData()">CLEAR</button>
+    </div>
     <br>
-    <textarea id="allChatData" width="97%" height="80%">Awaiting Password....</textarea>
+    <div>
+      <p>Important Message Sender:</p>
+      <textarea id="sender" cols="100" rows="2"></textarea><br>
+      <button onclick="sendMessage()">SEND</button>
+    </div>
+    <br>
+    <div>
+      <p>Password Changer:</p>
+      <input id="newPass" type="password"><br><br>
+      <button onclick="passwordChange()">CHANGE PASSWORD</button>
+    </div>
+    <br>
   </body>
 </html>
