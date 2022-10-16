@@ -63,15 +63,26 @@ socket.onmessage = function(event) {
         }
     }
 
+    if (dataType == "C") {
+        chatMessages = [];
+        alert("The chat room was cleared.");
+    }
 
     if (dataType == "M") {
         if (document.documentElement.style.cursor == "progress") {
             document.documentElement.style.cursor = "pointer";
         }
         chatMessages.unshift(dataData);
-        room.enter();
+        room.refresh();
+    }
 
+    if (dataType == "O") {
+        chatMessages = eval(dataData);
+        room.refresh();
+    }
 
+    if (dataType == "!") {
+        alert("IMPORTANT MESSAGE:\n" + dataData);
     }
 }
 
