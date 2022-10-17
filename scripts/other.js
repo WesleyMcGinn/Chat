@@ -1,6 +1,6 @@
 // This file holds simple functions that do not need to be separated into tiny files.
 
-// Global Variables:
+// Variables:
 var chatMessages = [];
 var roomNumber = null;
 var username = '';
