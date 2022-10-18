@@ -25,3 +25,8 @@ var room = {
         document.documentElement.style.cursor = "progress";
     },
 }
+
+function validateEntry() {
+    room.try(document.getElementById('Room Input').value, document.getElementById('Password Input').value);
+    document.documentElement.style.cursor = "progress";
+}
