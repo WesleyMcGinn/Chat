@@ -97,7 +97,7 @@ function websocketHandler(ws) {
         if (dataType == "V") { // Validate Room Name and Password
             var validated = "N";
             for (i = 0; i < chatData.length; i++) {
-                if (chatData[i][0] + "--u:p--" + chatData[i][1] == dataData) {
+                if ((chatData[i][0] + "--u:p--" + chatData[i][1]).toLowerCase() == dataData.toLowerCase()) {
                     validated = i;
                     break;
                 }
