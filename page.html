@@ -27,7 +27,7 @@
         </p><br>
         <p>
           <label for="Room Input">Chat Room ID: </label>
-          <input id="Room Input" type="text" size="7" oninput="checkForPassword()" onclick="refresh('Room_input')"> 
+          <input id="Room Input" type="text" size="7" onclick="refreshBlank(this)"> 
           OR 
           <button onclick="proposeNewRoom()">Create New Chat Room</button>
         </p>
@@ -35,7 +35,7 @@
           <label for="Password Input">Chat Room Password: </label>
           <input id="Password Input" type="password" size="30" onclick="refreshBlank(this)">
         </p><br>
-        <button onclick="enterRoom('', '')">GO</button>
+        <button onclick="validateEntry()">GO</button>
       </div>
       <div id="New" style="display: none">
         <p>
