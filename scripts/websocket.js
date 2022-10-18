@@ -37,6 +37,7 @@ socket.onmessage = function(event) {
     }
 
     if (dataType == "V") {
+        document.documentElement.style.cursor = "default";
         if (dataData == "N") {
             document.getElementById("Password Input").style.color = "red";
             document.getElementById("Password Input").style.borderColor = "red";
@@ -69,7 +70,7 @@ socket.onmessage = function(event) {
 
     if (dataType == "M") {
         if (document.documentElement.style.cursor == "progress") {
-            document.documentElement.style.cursor = "pointer";
+            document.documentElement.style.cursor = "default";
         }
         chatMessages.unshift(dataData);
         room.refresh();
