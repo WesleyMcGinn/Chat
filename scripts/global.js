@@ -1,4 +1,4 @@
-const serverIP = "192.168.1.100";
+const serverIP = "10.10.3.161";
 
 const websiteInfo = {
     Name : "Chat",
