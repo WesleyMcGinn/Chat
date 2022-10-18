@@ -29,13 +29,13 @@ var adminPassword;fs.readFile("C:/Users/admin/adminData/pw.dat",function(err,dat
 // HTML Server:
 http.createServer((req, res) => {
     var requestedFile = req.url;
-    if (redirectPages.includes(requestedFile)) {
+    if (redirectPages.includes(requestedFile.toLowerCase())) {
         requestedFile = '/page.html';
     }
     if (requestedFile.includes('server') || requestedFile.includes('no_send-')) {
         requestedFile = '/page.html';
     }
-    fs.readFile("C:/Users/admin/Desktop/Github Stuff/Chat/", function (err, data) {
+    fs.readFile("C:/Users/admin/Desktop/Github Stuff/Chat/" + requestedFile, function (err, data) {
         if (err) {
             fs.readFile("C:/Users/admin/Desktop/Github Stuff/Chat/page.html", function (err2, data2) {
                 if (err2) {
