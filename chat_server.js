@@ -1,6 +1,6 @@
 const chatDataDirectory = "C:/Users/admin/Desktop/Server/chatData0.dat";
 const backupDataDirectory = "C:/Users/admin/Desktop/Server/backup";
-const reportLevel = 3;
+const reportLevel = 4;
 
 const fs = require('fs');
 const http = require('http');
@@ -11,6 +11,7 @@ var people = 0;
 var chatData;
 const defaultChatData = [['TESTROOM', 'PASSWORD', [], ["<div style='padding: 7px; background-color: #072dc780; border-radius: 12px'>Welcome to the testroom!  This is where programming for Chat is tested.</div>"]]];
 const redirectPages = ['', '/', '/index.html', '/chat', 'chat.html'];
+const restrictedData = ['.', ',', '{', '}', '?', '/', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '[', ']'];
 
 // Retrieve chat data from file:
 fs.readFile(chatDataDirectory, function (err, data) {
@@ -73,18 +74,21 @@ function websocketHandler(ws) {
         var dataType = incomingData.substring(0, 1);
         var dataData = incomingData.substring(1, incomingData.length);
 
-        if (reportLevel >= 3) {
-            console.log('"' + dataType + '" <- ' + (dataData.length).toString() + ' bytes  -  ' + (new Date()).toString().slice(0,24));
+        if (reportLevel >= 4 && restrictedData.includes(dataType)) {
+            console.log('"' + dataType + '" <- "' + dataData.toString() + '"  -  ' + (new Date()).toString().slice(0,24));
         } else {
-            if (reportLevel >= 2) {
-                console.log('"' + dataType + '" <- ' + (dataData.length).toString() + ' bytes');
+            if (reportLevel >= 3) {
+                console.log('"' + dataType + '" <- ' + (dataData.length).toString() + ' bytes  -  ' + (new Date()).toString().slice(0,24));
             } else {
-                if (reportLevel >= 1) {
-                    console.log(dataType);
+                if (reportLevel >= 2) {
+                    console.log('"' + dataType + '" <- ' + (dataData.length).toString() + ' bytes');
+                } else {
+                    if (reportLevel >= 1) {
+                        console.log(dataType);
+                    }
                 }
             }
         }
-
 
         if (dataType == "G") { // Get Message List
             ws.send("G" + JSON.stringify(chatData[parseInt(dataData)]));
