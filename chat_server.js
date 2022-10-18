@@ -204,7 +204,7 @@ function websocketHandler(ws) {
                 console.log("  Attempted to: Broadcast this message to all Chat users: " + dataData[1]);
                 console.log("  Danger Level: 2 (Considerably Dangerous)");
             } else {
-                for(let client of clients) { client.send(dataData[1]); }
+                for(let client of clients) { client.send("!" + dataData[1]); }
             }
         }
 
