@@ -20,7 +20,11 @@ fs.readFile(chatDataDirectory, function (err, data) {
         console.log("        It will be created when the websocket recieves input.");
         chatData = defaultChatData;
     } else {
-        chatData = eval(data);
+        chatData = eval(data.toString());
+        if (reportLevel >= 4) {
+            console.log("Retrieved Chat Data: " + chatData);
+            console.log();
+        }
     }
 });
 
