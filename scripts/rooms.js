@@ -3,6 +3,7 @@
 var room = {
     create : function(RoomName, RoomPass) {
         sendData("N", JSON.stringify([RoomName, RoomPass]));
+        document.documentElement.style.cursor = "progress";
     },
     try : function(RoomName, RoomPass) {
         sendData("V", RoomName + "--u:p--" + RoomPass);
