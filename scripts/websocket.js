@@ -4,7 +4,7 @@ var toSend = "";
 var waitingToSend = null;
 var networkDelay = '?';
 
-let socket = new WebSocket("ws://" + serverIP + ":81");
+let socket = new WebSocket("ws://" + serverIP + "/connect");
 
 function sendData(sendDataType, sendData) {
     if (socket.readyState == 1) {
